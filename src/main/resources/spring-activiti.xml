@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- <bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+	</bean> -->
+
+	<!-- <bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+
+	<!-- 此文件用于配置流程框架activiti5, 即在Spring容器中注册activiti的组件， 注册后在项目中可直接使用activiti进行流程部署 -->
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionManager" ref="tm" />
+		<property name="databaseSchemaUpdate" value="true" />
+		<property name="jobExecutorActivate" value="false" />
+
+		<!-- 配置字体 -->
+		<property name="activityFontName" value="宋体"></property>
+		<property name="annotationFontName" value="宋体"></property>
+		<property name="labelFontName" value="宋体"></property>
+
+	</bean>
+
+	<!-- 以下是将流程引擎和几个service组件注册到spring的容器中； -->
+	<!-- 流程引擎 -->
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+	<!-- 得到各种service -->
+	<bean id="repositoryService" factory-bean="processEngine"
+		factory-method="getRepositoryService" />
+	<bean id="runtimeService" factory-bean="processEngine"
+		factory-method="getRuntimeService" />
+	<bean id="taskService" factory-bean="processEngine"
+		factory-method="getTaskService" />
+	<bean id="historyService" factory-bean="processEngine"
+		factory-method="getHistoryService" />
+	<!-- formService -->
+	<bean id="managementService" factory-bean="processEngine"
+		factory-method="getManagementService" />
+
+
+
+</beans>
